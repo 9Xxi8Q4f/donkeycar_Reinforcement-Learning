@@ -163,7 +163,7 @@ class Agent:
 
 class CriticNetwork(keras.Model):
 
-    def __init__(self, fc1_dims=512, fc2_dims=32, fc3_dims=8, observation_input_dims = 7,
+    def __init__(self, fc1_dims=256, fc2_dims=64, fc3_dims=32, observation_input_dims = 7,
             scaler_input_shape = None, n_actions = (2,), name='critic', chkpt_dir='./'):
         super(CriticNetwork, self).__init__()
 
@@ -176,6 +176,7 @@ class CriticNetwork(keras.Model):
 
         #*image net
         self.fc1 = Dense(self.fc1_dims, input_shape = observation_input_dims, activation='relu')
+        self.fc1_ = Dense(self.fc1_dims, activation="relu")
 
         #*scaler net
         self.fc2 = Dense(self.fc2_dims, input_shape = scaler_input_shape,activation='relu')
@@ -184,23 +185,33 @@ class CriticNetwork(keras.Model):
         self.fc3 = Dense(self.fc3_dims, input_shape = self.n_actions, activation='relu')
 
         #* concatenate layer
-        self.fc4 = Dense(1024, activation="relu")
+        self.fc4 = Dense(256, activation="relu")
         self.q = Dense(1, activation=None)
 
     def call(self, observation, scaler, action):
+
+        #* Image Layer 2*256
         image_value = self.fc1(observation)
+        image_value = self.fc1_(image_value)
+
+        #* Vector Layer 1*64
         scaler_value = self.fc2(scaler)
+
+        #* Action Layer 1*32
         action_value = self.fc3(action)
 
+        #* Concatenate Layer 1*256
         x = concatenate([image_value,scaler_value,action_value])
         con_value = self.fc4(x)
+
+        #* output q value 1
         q = self.q(con_value)
 
         return q
 
 class ActorNetwork(keras.Model):
 
-    def __init__(self, fc1_dims=1024, fc2_dims=32, fc3_dims = 1024, observation_input_dims = 7,
+    def __init__(self, fc1_dims=256, fc2_dims=64, fc3_dims = 256, observation_input_dims = 7,
             scaler_input_shape = None, n_actions=2, name='actor',
             chkpt_dir='./'):
         super(ActorNetwork, self).__init__()
@@ -215,6 +226,7 @@ class ActorNetwork(keras.Model):
 
         #* Image Network
         self.fc1 = Dense(self.fc1_dims, input_shape = observation_input_dims, activation='relu')
+        self.fc1_ = Dense(self.fc1_dims, activation="relu")
         #* Scaler Network
         self.fc2 = Dense(self.fc2_dims, input_shape= scaler_input_shape ,activation='relu')
         #* Concatenate layer
@@ -223,11 +235,18 @@ class ActorNetwork(keras.Model):
         self.mu = Dense(self.n_actions, activation='tanh')
 
     def call(self, observation, scaler):
+        #* Image Layer 2*256
         prob_a = self.fc1(observation)
+        prob_a = self.fc1_(prob_a)
+
+        #* Vector Layer 1*64
         prob_b = self.fc2(scaler)
 
+        #* Concatenate Layer 1*256
         x = concatenate([prob_a, prob_b])
         x = self.fc3(x)
+
+        #* output 2
         mu = self.mu(x)
 
         return mu
