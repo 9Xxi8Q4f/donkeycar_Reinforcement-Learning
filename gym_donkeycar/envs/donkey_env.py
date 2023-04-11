@@ -30,11 +30,7 @@ def supply_defaults(conf: Dict[str, Any]) -> None:
     """
     defaults = [
         ("start_delay", 5.0),
-<<<<<<< HEAD
         ("max_cte", 0.7),
-=======
-        ("max_cte", 0.6),
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
         ("frame_skip", 1),
         ("cam_resolution", (240, 320, 3)),
         ("log_level", logging.INFO),
@@ -145,13 +141,6 @@ class DonkeyEnv(gym.Env):
             self.viewer.take_action(action)
             observation, reward, done, info = self.viewer.observe()
             observation = process_obsevation(observation)
-<<<<<<< HEAD
-=======
-
-        observation = np.append(observation, [info["speed"], info["forward_vel"], info["cte"], 
-            info["vel"][0],info["vel"][1],info["vel"][2], 
-            info["accel"][0], info["accel"][1], info["accel"][2]])
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
                 
         return observation, reward, done, info
 
@@ -164,15 +153,7 @@ class DonkeyEnv(gym.Env):
         time.sleep(0.1)
         observation, reward, done, info = self.viewer.observe()
         observation = process_obsevation(observation)
-<<<<<<< HEAD
         # observation = np.append(observation)
-=======
-        self.speed = info["speed"]
-        self.forward_vel = info["forward_vel"]
-        observation = np.append(observation, [info["speed"], info["forward_vel"], info["cte"], 
-            info["vel"][0],info["vel"][1],info["vel"][2], 
-            info["accel"][0], info["accel"][1], info["accel"][2]])
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
         return observation, reward, done, info
 

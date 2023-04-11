@@ -20,12 +20,8 @@ show_preview = False
 aggregate_stats_every = 10 #* save model in every
 ep_rewards = [0]
 ep_average_rewards = [0]
-<<<<<<< HEAD
 average_error = [0]
 MODEL_NAME = "ddpg_"
-=======
-MODEL_NAME = "ddqn_"
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 ep = 0
 evaluate = False
 
@@ -41,7 +37,6 @@ def load_weights(load_weights = False):
     #* load model, params and episode rewards
     if load_weights == True:
 
-<<<<<<< HEAD
         params_ = json.load(open("parameters_ddpg/episode_370_params.json"))
         agent_.memory.mem_cntr = params_["mem_cntr"]
         agent_.memory.mem_cntr_ = params_["mem_cntr_"]
@@ -53,19 +48,6 @@ def load_weights(load_weights = False):
         actor_target = f"weights_/episode_{ep}/actor_target/"
         critic_eval = f"weights_/episode_{ep}/critic_eval/"
         critic_target = f"weights_/episode_{ep}/critic_target/"
-=======
-
-#* load model, params and episode rewards
-load_weights = True
-if load_weights == True:
-
-    params_ = json.load(open("parameters/episode_690_params.json"))
-    # episode = params_["episode"] + 1 #* 501
-    agent_.epsilon = params_["epsilon"]
-    agent_.memory.mem_cntr = params_["mem_cntr"]
-    agent_.memory.mem_cntr_ = params_["mem_cntr_"]
-    ep = params_["episode"]
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
         agent_.load_models(actor_eval=actor_eval, actor_target=actor_target, \
             critic_eval=critic_eval, critic_target=critic_target)
@@ -89,14 +71,9 @@ try:
         episode_reward = 0
         observation, reward, done, info = env.reset()
         shape_y = observation.shape[0]
-<<<<<<< HEAD
         info = np.array([info["cte"], info["speed"], info["forward_vel"], info["vel"][0], info["vel"][1], info["vel"][2]])
         step = 1
         error = 0
-=======
-        step = 1
-
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
         while True: #* if it's done block will break
 
@@ -128,11 +105,7 @@ try:
             agent_.learn()
 
             observation = new_observation
-<<<<<<< HEAD
             info = new_info
-=======
-            step += 1
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
             episode_reward += reward
             step += 1
@@ -140,7 +113,6 @@ try:
             if done:
                 break
 
-<<<<<<< HEAD
         av_error = error/step
         average_error.append(av_error)
         ep_rewards.append(episode_reward)
@@ -150,26 +122,6 @@ try:
         # agent_.tensorboard.update_stats(reward_avg=average_reward, reward_total=episode_reward, error_avg=av_error)
         #* save things in checkpoints
         if episode % aggregate_stats_every == 0 or episode == 1:
-=======
-
-        ep_rewards.append(episode_reward)
-        average_reward = episode_reward/step
-        ep_average_rewards.append(average_reward)
-
-
-        #* save things in checkpoints
-        if episode % aggregate_stats_every == 0 or episode == 1:
-            # average_reward = sum(ep_rewards[-aggregate_stats_every:])/len(ep_rewards[-aggregate_stats_every:])
-            min_reward = min(ep_rewards[-aggregate_stats_every:])
-            max_reward = max(ep_rewards[-aggregate_stats_every:])
-            
-
-            agent_.tensorboard.update_stats(reward_avg=average_reward, reward_min=min_reward, reward_max=max_reward)
-
-            #* save all model all at once
-            # agent_.save_model(f'models/{MODEL_NAME}__{max_reward:_>7.2f}max_{average_reward:_>7.2f}avg_{min_reward:_>7.2f}min__{int(time.time())}.model')
-
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
             #* save current parameters as json
             dictionary = {"episode":episode, "mem_cntr":agent_.memory.mem_cntr, "mem_cntr_": agent_.memory.mem_cntr_, "noise": agent_.noise, "total_mem_cnt": agent_.memory.total_mem_cnt}
             with open(f'parameters_ddpg/episode_{episode}_params.json', 'x') as outfile:
@@ -185,24 +137,16 @@ try:
                 # indent=2 is not needed but makes the file human-readable 
                 # if the data is nested
                 json.dump(ep_rewards, f, indent=2) 
-<<<<<<< HEAD
             
             with open(f"parameters_ddpg/episode_{episode}_av_rewards.json", 'x') as f:
-=======
-        
-            with open(f"parameters/episode_{episode}_av_rewards.json", 'x') as f:
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
                 # indent=2 is not needed but makes the file human-readable 
                 # if the data is nested
                 json.dump(ep_average_rewards, f, indent=2) 
 
-<<<<<<< HEAD
             with open(f"parameters_ddpg/episode_{episode}_average_error.json", 'x') as f:
                 # indent=2 is not needed but makes the file human-readable 
                 # if the data is nested
                 json.dump(average_error, f, indent=2) 
-=======
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
 except KeyboardInterrupt:
     # You can kill the program using ctrl+c

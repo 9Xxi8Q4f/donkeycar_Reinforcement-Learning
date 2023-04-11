@@ -18,24 +18,14 @@ XT_provoking_vertex GL_EXT_rescale_normal GL_EXT_secondary_color GL_EXT_separate
 EXT_window_rectangles GL_EXT_x11_sync_object GL_EXT_import_sync_object GL_NV_robustness_video_memory_purge GL_IBM_rasterpos_clip GL_IBM_texture_mirrored_repeat GL_KHR_context_flush_control GL_KHR_debug GL_EXT_memory_object GL_EXT_memory_object_fd GL_KHR_parallel_shader_compile GL_KHR_no_error GL_KHR_robust_buffer_access_behavior GL_KHR_robustness GL_EXT_semaphore GL_EXT_semaphore_fd GL_NV_timeline_semaphore GL_KHR_shader_subgroup GL_KTX_buffer_region GL_NV_alpha_to_coverage_dither_control GL_NV_bindless_multi_draw_indirect GL_NV_bindless_multi_draw_indirect_count GL_NV_bindless_texture GL_NV_blend_equation_advanced GL_NV_blend_equation_advanced_coherent GL_NV_blend_minmax_factor GL_NV_blend_square GL_NV_command_list GL_NV_compute_program5 GL_NV_conditional_render GL_NV_copy_depth_to_color GL_NV_copy_image GL_NV_depth_buffer_float GL_NV_depth_clamp GL_NV_draw_texture GL_NV_draw_vulkan_image GL_NV_ES1_1_compatibility GL_NV_ES3_1_compatibility GL_NV_explicit_multisample GL_NV_feature_query GL_NV_fence GL_NV_flo
 at_buffer GL_NV_fog_distance GL_NV_fragment_program GL_NV_fragment_program_option GL_NV_fragment_program2 GL_NV_framebuffer_multisample_coverage GL_NV_geometry_shader4 GL_NV_gpu_program4 GL_NV_internalformat_sample_query GL_NV_gpu_program4_1 GL_NV_gpu_program5 GL_NV_gpu_program5_mem_extended GL_NV_gpu_program_fp64 GL_NV_gpu_shader5 GL_NV_half_float GL_NV_light_max_exponent GL_NV_multisample_coverage GL_NV_multisample_filter_hint GL_NV_occlusion_query GL_NV_packed_depth_stencil GL_NV_parameter_buffer_object GL_NV_parameter_buffer_object2 GL_NV_path_rendering GL_NV_pixel_data_range GL_NV_point_sprite GL_NV_primitive_restart GL_NV_query_resource GL_NV_query_resource_tag GL_NV_register_combiners GL_NV_register_combiners2 GL_NV_shader_atomic_counters GL_NV_shader_atomic_float GL_NV_shader_atomic_int64 GL_NV_shader_buffer_load GL_NV_shader_storage_buffer_object GL_NV_shader_subgroup_partitioned GL_NV_texgen_reflection GL_NV_texture_barrier GL_NV_texture_compression_vtc GL_NV_texture_env_combine4 GL_NV_texture_mult
 isample GL_NV_texture_rectangle GL_NV_texture_rectangle_compressed GL_NV_texture_shader GL_NV_texture_shader2 GL_NV_texture_shader3 GL_NV_transform_feedback GL_NV_transform_feedback2 GL_NV_uniform_buffer_unified_memory GL_NV_vdpau_interop GL_NV_vdpau_interop2 GL_NV_vertex_array_range GL_NV_vertex_array_range2 GL_NV_vertex_attrib_integer_64bit GL_NV_vertex_buffer_unified_memory GL_NV_vertex_program GL_NV_vertex_program1_1 GL_NV_vertex_program2 GL_NV_vertex_program2_option GL_NV_vertex_program3 GL_NVX_conditional_render GL_NV_gpu_multicast GL_NVX_progress_fence GL_NVX_gpu_memory_info GL_NVX_nvenc_interop GL_NV_shader_thread_group GL_NV_shader_thread_shuffle GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_OVR_multiview GL_OVR_multiview2 GL_SGIS_generate_mipmap GL_SGIS_texture_lod GL_SGIX_depth_texture GL_SGIX_shadow GL_SUN_slice_accum
-<<<<<<< HEAD
-OPENGL LOG: Creating OpenGL 4.5 graphics device ; Context level  <OpenGL 4.5> ; Context handle 19811704
+OPENGL LOG: Creating OpenGL 4.5 graphics device ; Context level  <OpenGL 4.5> ; Context handle 40051992
 Begin MonoManager ReloadAssembly
-- Completed reload, in  0.603 seconds
-=======
-OPENGL LOG: Creating OpenGL 4.5 graphics device ; Context level  <OpenGL 4.5> ; Context handle 16844504
-Begin MonoManager ReloadAssembly
-- Completed reload, in  1.072 seconds
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
+- Completed reload, in  0.668 seconds
 Default vsync count 0
 requesting resize 794 x 532
 resizing window to 794 x 532
 Desktop is 1366 x 768 @ 60 Hz
-<<<<<<< HEAD
-UnloadTime: 12.291978 ms
-=======
-UnloadTime: 312.328062 ms
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
+UnloadTime: 36.393634 ms
 SDSandbox Server starting.
 
 Server Listening on: 0.0.0.0:9091
@@ -49,13 +39,8 @@ Server Listening on: 0.0.0.0:9092
 Waiting for a connection...
 
 Setting up 2 worker threads for Enlighten.
-<<<<<<< HEAD
-  Thread -> id: 7f94252cc700 -> priority: 1 
-  Thread -> id: 7f9424acb700 -> priority: 1 
-=======
-  Thread -> id: 7f47b37fe700 -> priority: 1 
-  Thread -> id: 7f47b2ffd700 -> priority: 1 
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
+  Thread -> id: 7f8e436fe700 -> priority: 1 
+  Thread -> id: 7f8e42efd700 -> priority: 1 
 Waiting for a connection...
 
 client connected.
@@ -65,11 +50,7 @@ generated_road
 loaded scene
 
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-<<<<<<< HEAD
-UnloadTime: 29.081546 ms
-=======
-UnloadTime: 61.762666 ms
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
+UnloadTime: 47.890023 ms
 JustOne removing instance.MainThDisp
 
 JustOne removing instance.SandboxServer
@@ -80,9 +61,5 @@ car loaded.
 
 
 Unloading 33 unused Assets to reduce memory usage. Loaded Objects now: 3013.
-<<<<<<< HEAD
-Total: 4.247359 ms (FindLiveObjects: 0.419961 ms CreateObjectMapping: 0.140227 ms MarkObjects: 2.286044 ms  DeleteObjects: 1.400562 ms)
-=======
-Total: 92.336749 ms (FindLiveObjects: 0.218804 ms CreateObjectMapping: 0.125963 ms MarkObjects: 2.363816 ms  DeleteObjects: 89.627646 ms)
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
+Total: 8.922390 ms (FindLiveObjects: 0.513234 ms CreateObjectMapping: 0.298651 ms MarkObjects: 5.497594 ms  DeleteObjects: 2.611492 ms)
 
