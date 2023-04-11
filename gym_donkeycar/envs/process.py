@@ -92,23 +92,23 @@ def hh(edges, orig_img):
                         pass
     return ret_img
 
-
 def process_obsevation(image):
     
-    orig_img = image
-    orig_img = cv2.resize(orig_img, (80,60))
+    orig_img = image    
     orig_img = grayscale(orig_img)
     orig_img = cv2.equalizeHist(orig_img)
-    orig_img = gaussian_blur(orig_img, 3)
 
-    edges = detect_edges(orig_img, 150,200)
-    ret_img = hh(edges,orig_img)
-    ret_img = cv2.resize(ret_img, (40,30))
-    result = ret_img
-    result[(ret_img > 0)] = 1
-    result = result[10:,:]
+    orig_img = cv2.resize(orig_img, (80,80))    
+    orig_img = gaussian_blur(orig_img, 7)
+
+
+    edges = detect_edges(orig_img, 200,250)
+    # ret_img = hh(edges,orig_img)
+    # ret_img = cv2.resize(ret_img, (40,30))
+    result = edges
+    # result[(ret_img > 0)] = 1
+    result = result[30:,:]
 
     result = result.flatten()
     
     return result
-
