@@ -24,13 +24,8 @@ class Agent:
 
     def __init__(self, input_dims, scaler_dims, alpha=0.001, beta=0.002, 
                  gamma=0.99, n_actions=2, max_size=50000, min_mem_size = 100,
-<<<<<<< HEAD
                  tau=0.005, batch_size=64, noise=0.1, replace_target =100):
  
-=======
-                 tau=0.005, fc1=13, fc2=13, batch_size=64, noise=0.1, replace_target =100):
-
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
         self.gamma = gamma
         self.tau = tau
         self.n_actions = n_actions
@@ -106,7 +101,6 @@ class Agent:
 
     def choose_action(self, observation, scaler, evaluate=False):
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
-<<<<<<< HEAD
         scaler= tf.convert_to_tensor([scaler], dtype=tf.float32)
 
         actions = self.actor(state, scaler)
@@ -114,18 +108,6 @@ class Agent:
         if not evaluate:
             actions += tf.random.normal(shape=[self.n_actions],
                                         mean=0.0, stddev=self.noise)
-=======
-        actions = self.actor(state)
-        if not evaluate:
-            actions += tf.random.normal(shape=[self.n_actions],
-                                        mean=0.0, stddev=self.noise)
-
-            # actions += self.noise * np.random.randn(self.n_actions)
-
-        # ***note that if the env has an action > 1, we have to multiply by
-        # ***max action at some point
-        # actions = tf.clip_by_value(actions, self.min_action, self.max_action)
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
         return actions[0]
 
@@ -173,23 +155,15 @@ class Agent:
         self.actor.optimizer.apply_gradients(zip(
             actor_network_gradient, self.actor.trainable_variables))
 
-<<<<<<< HEAD
         if self.memory.total_mem_cnt % self.replace_target == 0:
 
             self.update_network_parameters(self.tau)
             print("Target replaced")      
-=======
-
-        if self.memory.total_mem_cnt % self.replace_target == 0:
-
-            self.update_network_parameters(self.tau)
-            # print("Target replaced")      
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
 
 
 class CriticNetwork(keras.Model):
 
-    def __init__(self, fc1_dims=1024, fc2_dims=32, fc3_dims=8, observation_input_dims = 7,
+    def __init__(self, fc1_dims=512, fc2_dims=32, fc3_dims=8, observation_input_dims = 7,
             scaler_input_shape = None, n_actions = (2,), name='critic', chkpt_dir='./'):
         super(CriticNetwork, self).__init__()
 
@@ -209,14 +183,8 @@ class CriticNetwork(keras.Model):
         #* action net
         self.fc3 = Dense(self.fc3_dims, input_shape = self.n_actions, activation='relu')
 
-<<<<<<< HEAD
         #* concatenate layer
         self.fc4 = Dense(1024, activation="relu")
-=======
-        self.fc1 = Dense(self.fc1_dims, input_shape = self.input_dims, activation='relu')
-        # self.fc2 = Dense(self.fc2_dims, activation='relu')
-        # self.fc3 = Dense(self.fc3_dims, activation='relu')
->>>>>>> 7d4588d93ca9125b7dff7a650a8e40591b1c5788
         self.q = Dense(1, activation=None)
 
     def call(self, observation, scaler, action):
