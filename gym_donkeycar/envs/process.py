@@ -98,7 +98,7 @@ def process_obsevation(image):
     orig_img = grayscale(orig_img)
     orig_img = cv2.equalizeHist(orig_img)
 
-    orig_img = cv2.resize(orig_img, (80,80))    
+    orig_img = cv2.resize(orig_img, (64,64))    
     orig_img = gaussian_blur(orig_img, 7)
 
 
@@ -107,7 +107,7 @@ def process_obsevation(image):
     # ret_img = cv2.resize(ret_img, (40,30))
     result = edges
     # result[(ret_img > 0)] = 1
-    result = result[30:,:]
+    # result = result[30:,:]
 
     result = result.flatten()
     

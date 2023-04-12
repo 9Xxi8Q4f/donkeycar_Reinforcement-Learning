@@ -3,7 +3,7 @@ import tensorflow as tf
 import keras
 from keras.optimizers import Adam
 import time
-from keras.layers import Dense, concatenate
+from keras.layers import Dense, concatenate, Convolution2D, Flatten
 import os
 from keras.callbacks import TensorBoard
 import time
@@ -124,6 +124,9 @@ class Agent:
         state, action, reward, new_state, done, info, new_info = \
             self.memory.sample_buffer(self.batch_size)
 
+        state = state.reshape((self.batch_size, 64,64,1))
+        new_state = new_state.reshape((self.batch_size, 64,64,1))
+
         #* Convert to tensors
         states = tf.convert_to_tensor(state, dtype=tf.float32)
         states_ = tf.convert_to_tensor(new_state, dtype=tf.float32)
@@ -163,20 +166,26 @@ class Agent:
 
 class CriticNetwork(keras.Model):
 
-    def __init__(self, fc1_dims=256, fc2_dims=64, fc3_dims=32, observation_input_dims = 7,
+    def __init__(self, fc1_dims=512, fc2_dims=32, fc3_dims=4, observation_input_dims = 7,
             scaler_input_shape = None, n_actions = (2,), name='critic', chkpt_dir='./'):
         super(CriticNetwork, self).__init__()
 
-        self.image_input = keras.Input(shape=(observation_input_dims), name="img_input")
-        self.timeseries_input = keras.Input(shape=(scaler_input_shape), name="ts_input")
+        # self.image_input = keras.Input(shape=(observation_input_dims), name="img_input")
+        # self.timeseries_input = keras.Input(shape=(scaler_input_shape), name="ts_input")
+
         self.n_actions = n_actions
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
         self.fc3_dims = fc3_dims
 
         #*image net
-        self.fc1 = Dense(self.fc1_dims, input_shape = observation_input_dims, activation='relu')
-        self.fc1_ = Dense(self.fc1_dims, activation="relu")
+        # self.fc1 = Dense(self.fc1_dims, input_shape = observation_input_dims, activation='relu')
+        self.fc1 = Convolution2D(32,8, activation='relu')
+        self.fc1_ = Convolution2D(64,4, activation='relu')
+        # self.fc1_ = Dense(self.fc1_dims, activation="relu")
+        
+        #* Flatten Layer
+        self.flatten = Flatten()
 
         #*scaler net
         self.fc2 = Dense(self.fc2_dims, input_shape = scaler_input_shape,activation='relu')
@@ -185,24 +194,33 @@ class CriticNetwork(keras.Model):
         self.fc3 = Dense(self.fc3_dims, input_shape = self.n_actions, activation='relu')
 
         #* concatenate layer
-        self.fc4 = Dense(256, activation="relu")
+        self.fc4 = Dense(512, activation="relu")
+        # self.fc4_ = Dense(512, activation="relu")
+
         self.q = Dense(1, activation=None)
 
     def call(self, observation, scaler, action):
 
         #* Image Layer 2*256
+
         image_value = self.fc1(observation)
         image_value = self.fc1_(image_value)
+        image_value = self.flatten(image_value)
 
         #* Vector Layer 1*64
         scaler_value = self.fc2(scaler)
+        scaler_value = self.flatten(scaler_value)
+
 
         #* Action Layer 1*32
         action_value = self.fc3(action)
+        action_value = self.flatten(action_value)
 
         #* Concatenate Layer 1*256
         x = concatenate([image_value,scaler_value,action_value])
         con_value = self.fc4(x)
+        # con_value = self.fc4_(con_value)
+
 
         #* output q value 1
         q = self.q(con_value)
@@ -211,13 +229,13 @@ class CriticNetwork(keras.Model):
 
 class ActorNetwork(keras.Model):
 
-    def __init__(self, fc1_dims=256, fc2_dims=64, fc3_dims = 256, observation_input_dims = 7,
+    def __init__(self, fc1_dims=512, fc2_dims=32, fc3_dims = 512, observation_input_dims = 7,
             scaler_input_shape = None, n_actions=2, name='actor',
             chkpt_dir='./'):
         super(ActorNetwork, self).__init__()
 
-        self.image_input = keras.Input(shape=(observation_input_dims), name="img_input")
-        self.timeseries_input = keras.Input(shape=(scaler_input_shape), name="ts_input")
+        # self.image_input = keras.Input(shape=(observation_input_dims), name="img_input")
+        # self.timeseries_input = keras.Input(shape=(scaler_input_shape), name="ts_input")
 
         self.fc1_dims = fc1_dims
         self.fc2_dims = fc2_dims
@@ -225,80 +243,39 @@ class ActorNetwork(keras.Model):
         self.n_actions = n_actions
 
         #* Image Network
-        self.fc1 = Dense(self.fc1_dims, input_shape = observation_input_dims, activation='relu')
-        self.fc1_ = Dense(self.fc1_dims, activation="relu")
+        # self.fc1 = Dense(self.fc1_dims, input_shape = observation_input_dims, activation='relu')
+        self.fc1 = Convolution2D(32,8, activation='relu')
+        self.fc1_ = Convolution2D(64,4, activation='relu')
+
+        #* Flatten Layer
+        self.flatten = Flatten()
+
         #* Scaler Network
         self.fc2 = Dense(self.fc2_dims, input_shape= scaler_input_shape ,activation='relu')
+
         #* Concatenate layer
         self.fc3 = Dense(self.fc3_dims, activation='relu')
+        # self.fc3_ = Dense(self.fc3_dims, activation='relu')
+
         #* Output Layer
         self.mu = Dense(self.n_actions, activation='tanh')
 
     def call(self, observation, scaler):
+
         #* Image Layer 2*256
         prob_a = self.fc1(observation)
         prob_a = self.fc1_(prob_a)
-
+        prob_a = self.flatten(prob_a)
         #* Vector Layer 1*64
         prob_b = self.fc2(scaler)
+        prob_b = self.flatten(prob_b)
 
         #* Concatenate Layer 1*256
         x = concatenate([prob_a, prob_b])
         x = self.fc3(x)
+        # x = self.fc3_(x)
 
         #* output 2
         mu = self.mu(x)
 
         return mu
-
-# Own Tensorboard class
-class ModifiedTensorBoard(TensorBoard):
-
-    # *Overriding init to set initial step and writer (we want one log file for all .fit() calls)
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.step = 1
-        self.writer = tf.summary.create_file_writer(self.log_dir)
-        self._log_write_dir = os.path.join(self.log_dir, MODEL_NAME)
-
-    # *Overriding this method to stop creating default log writer
-    def set_model(self, model):
-        self.model = model
-        
-        self._train_dir = os.path.join(self._log_write_dir, 'train')
-        self._train_step = self.model._train_counter 
-
-        self._val_dir = os.path.join(self._log_write_dir, 'validation')
-        self._val_step = self.model._test_counter
-
-        pass
-
-    #* Overrided, saves logs with our step number
-    #* (otherwise every .fit() will start writing from 0th step)
-    def on_epoch_end(self, epoch, logs=None):
-        self.update_stats(**logs)
-
-    #* Overrided
-    #* We train for one batch only, no need to save anything at epoch end
-    def on_batch_end(self, batch, logs=None):
-        pass
-
-    #* Overrided, so won't close writer
-    def on_train_end(self, _):
-        pass
-
-    def on_train_batch_end(self, batch, logs=None):
-        pass
-
-    #* Custom method for saving own metrics
-    #* Creates writer, writes custom metrics and closes writer
-    def update_stats(self, **stats):
-        self._write_logs(stats, self.step)
-
-    #* Added because of version
-    def _write_logs(self, logs, index):
-        with self.writer.as_default():
-            for name, value in logs.items():
-                tf.summary.scalar(name, value, step=index)
-                self.step += 1
-                self.writer.flush()

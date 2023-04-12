@@ -26,12 +26,14 @@ ep = 0
 evaluate = False
 
 #* env output shape handling for neural networks
-env = gym.make("donkey-generated-roads-v0", conf = conf)
+env = gym.make("donkey-generated-track-v0", conf = conf)
 obs, reward, done, info = env.reset()
-info = np.array([info["cte"], info["speed"], info["forward_vel"], info["vel"][0], info["vel"][1], info["vel"][2]])
+info = np.array([info["cte"], info["speed"], 
+        info["forward_vel"], info["vel"][0], info["vel"][1], 
+        info["vel"][2], info["pos"][0], info["pos"][1], info["pos"][2]])
 
 #* agent set up
-agent_ = ddpg_.Agent(input_dims= obs.shape, scaler_dims = info.shape, min_mem_size=100, max_size=10000, batch_size=64)
+agent_ = ddpg_.Agent(input_dims= obs.shape, scaler_dims = info.shape, min_mem_size=50, max_size=10000, batch_size=32)
 
 def load_weights(load_weights = False):
     #* load model, params and episode rewards
@@ -71,7 +73,9 @@ try:
         episode_reward = 0
         observation, reward, done, info = env.reset()
         shape_y = observation.shape[0]
-        info = np.array([info["cte"], info["speed"], info["forward_vel"], info["vel"][0], info["vel"][1], info["vel"][2]])
+        info = np.array([info["cte"], info["speed"], 
+        info["forward_vel"], info["vel"][0], info["vel"][1], 
+        info["vel"][2], info["pos"][0], info["pos"][1], info["pos"][2]])
         step = 1
         error = 0
 
@@ -79,25 +83,26 @@ try:
 
             #! normally shape is (X,) 
             observation = observation.reshape((1,shape_y))
+            observation_2D = observation.copy().reshape((64,64,1))
             info = info.reshape((1, info.shape[0]))
-            action = agent_.choose_action(observation, info, evaluate)
+            action = agent_.choose_action(observation_2D, info, evaluate)
             action = np.array(action)
 
-            if action[0,0] < -1.0: action[0,0] = -1.0
-            if action[0,0] > 1.0 : action[0,0] = 1.0
-            if action[0,1] < -1.0: action[0,1] = -1.0
-            if action[0,1] > 1.0 : action[0,1] = 1.0
+            if action[0] < -1.0: action[0] = -1.0
+            if action[0] > 1.0 : action[0] = 1.0
+            if action[1] < -1.0: action[1] = -1.0
+            if action[1] > 1.0 : action[1] = 1.0
 
-            action = np.array([action[0,0],(action[0,1]+1.5)/25.0])
-
+            action = np.array([action[0],(action[1]+1.5)/25.0])
 
             new_observation, reward, done, new_info = env.step(action)
 
             error += math.fabs(new_info["cte"])
 
             new_info = np.array([new_info["cte"], new_info["speed"], 
-            new_info["forward_vel"], new_info["vel"][0],
-             new_info["vel"][1], new_info["vel"][2]])
+            new_info["forward_vel"], new_info["vel"][0], new_info["vel"][1], 
+            new_info["vel"][2], new_info["pos"][0], new_info["pos"][1], 
+            new_info["pos"][2]])
 
             #* Every step we update replay memory and train main network
             agent_.remember(observation, action, reward, new_observation, done, info, new_info)
